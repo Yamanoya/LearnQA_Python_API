@@ -1,4 +1,7 @@
+import json
+
 import requests
+import time
 
 base_path = "https://playground.learnqa.ru/api/"
 
@@ -56,3 +59,22 @@ def exams_seven_requests_and_methods():
 
 
 exams_seven_requests_and_methods()
+
+def exams_eight_tokens():
+
+    url = 'https://playground.learnqa.ru/ajax/api/longtime_job'
+
+    response = requests.get(url=url)
+    token = response.json()['token']
+    seconds = response.json()['seconds']
+    new_response = requests.get(url=url, params={"token": token})
+    _ = new_response.json()['status'] == 'Job is NOT ready'
+    time.sleep(seconds)
+    end_response = requests.get(url=url, params={"token": token})
+    _ = end_response.json()['status'] == 'Job is ready'
+    result = end_response.json()['result']
+    if result:
+        print("Результат выполнения задачи:", result)
+
+
+exams_eight_tokens()
