@@ -6,26 +6,21 @@ from datetime import datetime
 
 class TestUserRegister(BaseCase):
 
-    def set_up(self):
-        base_part = 'learnqa'
-        domain = 'example.com'
-        random_part = datetime.now().strftime('%m%d%Y%H%M%S')
-        return f"{base_part}{random_part}@{domain}"
-
     def test_user_successfully(self):
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'learnqa',
-            'lastName': 'learnqa',
-            'email': self.set_up(),
-        }
+        data = self.prepare_registration_data()
 
         response = requests.post('https://playground.learnqa.ru/api/user/', data=data)
 
         Assertions.assert_status_code(response, 200)
         Assertions.assert_json_has_key(response, "id")
 
+    def test_create_user_with_existing_email(self):
+
+        data = self.prepare_registration_data(email="vinkotov@example.com")
+        response = requests.post('https://playground.learnqa.ru/api/user/', data=data)
+
+        Assertions.assert_status_code(response, 400)
+        assert response.content.decode("utf-8") == f"Users with email '{data['email']}' already exists"
 
     @pytest.mark.parametrize(
         'email, password, username, firstname, lastname, error',
@@ -47,7 +42,7 @@ class TestUserRegister(BaseCase):
              'character_more_250',
              ]
     )
-    def test_create_user_with_existing_email(self, email, password, username, firstname, lastname, error):
+    def test_ex_fifteen(self, email, password, username, firstname, lastname, error):
         data = {
             'password': password,
             'username': username,

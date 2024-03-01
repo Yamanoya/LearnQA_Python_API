@@ -1,4 +1,3 @@
-import random
 
 import requests
 from lib.base_case import BaseCase
