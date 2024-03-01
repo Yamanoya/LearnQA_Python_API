@@ -35,6 +35,6 @@ class TestUserRegister(BaseCase):
         }
         response = requests.post('https://playground.learnqa.ru/api/user/', data=data)
 
-        assert response.status_code == 400, f'Unexpceted status code {response.status_code}'
+        Assertions.assert_status_code(response, 400)
         assert response.content.decode("utf-8") == error
 
