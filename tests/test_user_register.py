@@ -2,8 +2,30 @@ import pytest
 import requests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
+from datetime import datetime
 
 class TestUserRegister(BaseCase):
+
+    def set_up(self):
+        base_part = 'learnqa'
+        domain = 'example.com'
+        random_part = datetime.now().strftime('%m%d%Y%H%M%S')
+        return f"{base_part}{random_part}@{domain}"
+
+    def test_user_successfully(self):
+        data = {
+            'password': '123',
+            'username': 'learnqa',
+            'firstName': 'learnqa',
+            'lastName': 'learnqa',
+            'email': self.set_up(),
+        }
+
+        response = requests.post('https://playground.learnqa.ru/api/user/', data=data)
+
+        Assertions.assert_status_code(response, 200)
+        Assertions.assert_json_has_key(response, "id")
+
 
     @pytest.mark.parametrize(
         'email, password, username, firstname, lastname, error',
